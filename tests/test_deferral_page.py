@@ -23,18 +23,12 @@ class TestDeferralPage:
     @pytest.mark.regress
     # https://qa-platferrum.testit.software/projects/2232/tests/17755
     # FE Три окна - полноценный покупатель
-    def test_three_windows_authorized_buyer(self, browser):
+    @pytest.mark.parametrize("button", ["left", "central", "right"])
+    def test_three_windows_authorized_buyer(self, button, browser):
         page = DeferralPage(browser)
         page.open_page_and_authorize()
-
-        page.click_left_calc_request_button()
-        page.check_1st_screen_header()
-        page.click_cancel_1st_screen()
-
-        page.click_central_calc_request_button()
-        page.check_1st_screen_header()
-        page.click_cancel_1st_screen()
-
-        page.click_right_calc_request_button()
-        page.check_1st_screen_header()
+        calc_request_button = getattr(page, f"click_{button}_calc_request_button")
+        calc_request_button()
+        assert page.check_1st_screen_header(), "Неправильный заголовок модального окна"
+        page.click_cancel_1st_screen
 

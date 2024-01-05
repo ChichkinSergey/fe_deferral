@@ -33,72 +33,98 @@ class DeferralPage(Base):
         self.modal_text = '//div[contains(text(), "Наши специалисты свяжутся с") and contains(text(), "вами в") and contains(text(), "ближайшее время.")]'
 
     def open_deferral_page(self):
+        '''Открывает окно страницы отсрочки'''
         self.browser.get(self.link)
 
     def open_page_and_authorize(self):
+        '''Обьединение для читаемости теста: открывает окно страницы отсрочки, закрывает регион и авторизуется'''
         main_page = MainPage(self.browser)
         self.open_deferral_page()
         main_page.confirm_region()
         main_page.authorize()
 
     def scroll_to_left_button(self):
+        '''Скролл к левой кнопке на странице отсрочки'''
         button = self.xpath_is_clicable(self.left_button)
         self.browser.execute_script("arguments[0].scrollIntoView();", button)
 
+    def scroll_to_central_button(self):
+        '''Скролл к центральной кнопке на странице отсрочки'''
+        button = self.xpath_is_clicable(self.central_button)
+        self.browser.execute_script("arguments[0].scrollIntoView();", button)
+
     def scroll_to_right_button(self):
+        '''Скролл к правой кнопке на странице отсрочки'''
         button = self.xpath_is_clicable(self.right_button)
         self.browser.execute_script("arguments[0].scrollIntoView();", button)
 
     def click_left_calc_request_button(self):
+        '''Клик на левую кнопку на странице отсрочки'''
         self.scroll_to_left_button()
         button = self.xpath_is_clicable(self.left_button)
         button.click()
 
     def click_central_calc_request_button(self):
+        '''Клик на центральную кнопку на странице отсрочки'''
+        self.scroll_to_central_button()
         button = self.xpath_is_clicable(self.central_button)
         button.click()
 
     def click_right_calc_request_button(self):
+        '''Клик на правую кнопку на странице отсрочки'''
         self.scroll_to_right_button()
         button = self.xpath_is_clicable(self.right_button)
         button.click()
 
     def click_next_1st_screen(self):
+        '''Клик на кнопку "Дальше" на первом экране'''
         button = self.xpath_is_clicable(self.next_1st_screen)
         button.click()
 
     def click_cancel_1st_screen(self):
+        '''Клик на кнопку "Отменить" на первом экране'''
         button = self.xpath_is_clicable(self.cancel_1st_screen)
         button.click()
 
     def click_5_million(self):
+        '''Клик на кнопку "До 5 млн ₽" на первом экране'''
         button = self.xpath_is_clicable(self.five_million)
         button.click()
 
     def click_next_2nd_screen(self):
+        '''Клик на кнопку "Дальше" на втором экране'''
         button = self.xpath_is_clicable(self.next_2nd_screen)
         button.click()
 
     def send_without_docs(self):
+        '''Клик на кнопку "Отправить заявку без документов" на третьем экране'''
         button = self.xpath_is_clicable(self.submit_without_docs)
         button.click()
 
     def check_success_submission_header(self):
-        self.xpath_is_visible(self.modal_header)
-        return True
+        '''Проверка заголовка модального окна после отправки заявки'''
+        header = self.xpath_is_visible(self.modal_header)
+        if header.text == 'Заявка успешно отправлена':
+            return True
 
     def check_1st_screen_header(self):
+        '''Проверка заголовка модального окна - 1ый экран'''
         header = self.xpath_is_visible(self.header_1st_screen)
-        assert header.text == 'Заявка на подключение отсрочки от Платферрум', "Не выводится правильный заголовок мод. окна"
+        if header.text == 'Заявка на подключение отсрочки от Платферрум':
+            return True
 
     def check_success_submission_text(self):
-        self.xpath_is_visible(self.modal_text)
-        return True
+        '''Проверка текста модального окна после отправки заявки'''
+        modal_text = self.xpath_is_visible(self.modal_text)
+        if modal_text.text == 'Наши специалисты свяжутся с вами в ближайшее время.':
+            return True
 
     def click_success_submission_exit_button(self):
+        '''Клик на кнопку "Вернуться на сайт" в модальном окне после отправки заявки'''
         button = self.xpath_is_clicable(self.modal_exit)
         button.click()
 
     def check_success_submission_is_invisible(self):
-        self.xpath_is_not_visible(self.modal_header)
-        return True
+        '''Проверка, что модальное окно свернулось (заголовок больше не виден)'''
+        if self.xpath_is_not_visible(self.modal_header):
+            return True
