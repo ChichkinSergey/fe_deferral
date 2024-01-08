@@ -1,5 +1,5 @@
-secret/
 pages/__pycache__/
 tests/__pycache__/
+secret/__pycache__/
 .idea/
 
